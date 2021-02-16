@@ -3,8 +3,9 @@ import 'package:Flash/models/topnews_model.dart';
 
 
 class ApiManager{
-  Future<TopNewsModel> getNews(endpoint) async {
-    String url = "http://newsapi.org/v2/top-headlines?$endpoint&apiKey=c62d2a326a874c998b523ca02bdd1674";
+  Future<TopNewsModel> getNews(endpoint, String mainEndPoint) async {
+    String mainEndpoints = mainEndPoint;
+    String url = "http://newsapi.org/v2/$mainEndpoints?$endpoint&apiKey=c62d2a326a874c998b523ca02bdd1674";
     print("url=");
     print(url);
     var response = await http.get(url);  

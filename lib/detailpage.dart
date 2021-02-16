@@ -26,90 +26,102 @@ class _DetailPageState extends State<DetailPage> {
     print(_date);
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(13),
-          child: ListView(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
+        child: ListView(
+          children: [
+            Stack(
+              children: [
+                Container(
+                    height: 200,
+                    width: MediaQuery.of(context).size.width,
+                    child: Hero(
+                      tag: "newsImage",
                       child: Image(
                         fit: BoxFit.cover,
                         image: NetworkImage(widget.urlToImage),
-                      )),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        onPressed: () => Navigator.pop(context),
-                      )
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.white,
-              ),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: widget.title,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                ]),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Row(
+                      ),
+                    )),
+                Column(
                   children: [
-                    Icon(Icons.calendar_today),
-                    SizedBox(
-                      width: 15,
+                    IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.pop(context),
+                    )
+                  ],
+                )
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: ListView(
+                  children: [
+                    Divider(
+                      color: Colors.white,
                     ),
-                    Text(_date)
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: widget.title,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20)),
+                      ]),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(_date)
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      widget.description,
+                      style: TextStyle(
+                          color: Colors.lightBlue,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                      child: Text(
+                        widget.content,
+                        style: TextStyle(fontSize: 20),
+                        overflow: TextOverflow.clip,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RichText(
+                      textAlign: TextAlign.right,
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: "Aritcle by: ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15)),
+                        TextSpan(
+                            text: widget.author,
+                            style: TextStyle(fontSize: 15)),
+                      ]),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                widget.description,
-                style: TextStyle(
-                    color: Colors.lightBlue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: Text(
-                  widget.content,
-                  style: TextStyle(fontSize: 20),
-                  overflow: TextOverflow.clip,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              RichText(
-                textAlign: TextAlign.right,
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: "Aritcle by: ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  TextSpan(text: widget.author, style: TextStyle(fontSize: 15)),
-                ]),
-              ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
