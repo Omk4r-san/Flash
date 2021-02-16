@@ -14,10 +14,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<TopNewsModel> _topNews;
+  var updateNews;
+  GlobalKey<RefreshIndicatorState> refreshkey;
+  String dropdownValue = "Top";
+  String bbcnews = "sources=bbc-news";
+  String endpoint = "sources=bbc-new";
+  List<String> _dropdownList = ['Top', 'BBC', 'Trump', 'News now'];
+  updatenews() {
+    setState(() {});
+  }
+
+  Future<void> refreshNews() async {
+    await Future.delayed(Duration(seconds: 1));
+    updatenews();
+    return null;
+  }
+
   @override
   void initState() {
-    _topNews = ApiManager().getNews();
+    refreshkey = GlobalKey<RefreshIndicatorState>();
     super.initState();
   }
 
@@ -25,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<TopNewsModel>(
-          future: _topNews,
+          future: ApiManager().getNews(endpoint),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               print(snapshot.data);
@@ -41,21 +56,74 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListView(children: [
       Container(
           height: 70,
-          child: Center(
-            child: RichText(
-              text: TextSpan(children: [
-                TextSpan(text: "Flash⚡", style: GoogleFonts.lato(fontSize: 35)),
-                TextSpan(
-                    text: "News",
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 30))
-              ]),
-            ),
+          child: Row(
+            children: [
+              RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: "Flash⚡",
+                      style: GoogleFonts.sourceCodePro(
+                          fontSize: 35, fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: "News",
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 30))
+                ]),
+              ),
+              _dropdown()
+            ],
           )),
-      SizedBox(height: 600, child: card(data))
+      SizedBox(
+          height: 600,
+          child: RefreshIndicator(
+              key: refreshkey,
+              onRefresh: () async {
+                await refreshNews();
+              },
+              child: card(data)))
     ]));
+  }
+
+  Widget _dropdown() {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: Icon(Icons.line_weight),
+      iconSize: 24,
+      elevation: 16,
+      style: TextStyle(color: Colors.white),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String newValue) {
+        if (newValue == "Top") {
+          dropdownValue = newValue;
+          setState(() {
+            endpoint = "country=us";
+          });
+        } else if (newValue == "BBC") {
+          setState(() {
+            endpoint = "sources=bbc";
+          });
+        } else if (newValue == "Trump") {
+          setState(() {
+            endpoint = "q=trump";
+          });
+        } else {
+          setState(() {
+            endpoint = "country=de&category=business";
+          });
+        }
+      },
+      items: _dropdownList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 
   Widget card(data) {
@@ -103,11 +171,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: Image(
-                              fit: BoxFit.cover,
-                              image:
-                                  NetworkImage(data.articles[index].urlToImage),
-                            ),
+                            child: data.articles[index].urlToImage != null
+                                ? Image(
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace stackTrace) {
+                                      return Image.network(
+                                          "https://webhostingmedia.net/wp-content/uploads/2018/01/http-error-404-not-found.png");
+                                    },
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        data.articles[index].urlToImage),
+                                  )
+                                : Image.network(
+                                    "https://webhostingmedia.net/wp-content/uploads/2018/01/http-error-404-not-found.png"),
                           ),
                         ),
                       ),

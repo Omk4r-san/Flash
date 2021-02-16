@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DetailPage extends StatefulWidget {
   final String author, title, description, urlToImage, content;
