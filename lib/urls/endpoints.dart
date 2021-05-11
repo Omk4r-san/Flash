@@ -9,7 +9,7 @@ class TopHeadLinesEndponint {
 }
 
 class EveryThingEndpoint {
-  String mainEndPoint = "everything";
+  String mainEndPoint = " ";
 
   String appleNews = "q=apple";
   String teslaNews = "q=tesla";

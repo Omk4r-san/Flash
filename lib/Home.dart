@@ -1,10 +1,10 @@
 import 'package:Flash/detailpage.dart';
 import 'package:Flash/urls/endpoints.dart';
 import 'package:flutter/material.dart';
-import 'package:Flash/Api_class.dart';
+import 'package:http/http.dart' as http;
+import 'package:Flash/models/topnews_model.dart';
 import 'package:Flash/models/topnews_model.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<TopNewsModel>(
-          future: ApiManager().getNews(endpoint, mainEndPoint),
+          future: getNews(endpoint, mainEndPoint),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               print(snapshot.data);
@@ -246,5 +246,24 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
+  }
+
+  Future<TopNewsModel> getNews(endpoint, String mainEndPoint) async {
+    String mainEndpoints = mainEndPoint;
+    String url =
+        "http://newsapi.org/v2/top-headlines?everything&apiKey=c62d2a326a874c998b523ca02bdd1674";
+    print("url=");
+    print(url);
+    var response = await http.get(url);
+    try {
+      if (response.statusCode == 200) {
+        var jsonString = response.body;
+        final topNews = topNewsModelFromJson(jsonString.toString());
+        return topNews;
+      }
+    } catch (Exception) {
+      print(Exception.toString());
+    }
+    return null;
   }
 }
